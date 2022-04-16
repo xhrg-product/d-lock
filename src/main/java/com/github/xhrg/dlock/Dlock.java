@@ -2,10 +2,10 @@ package com.github.xhrg.dlock;
 
 public interface Dlock {
 
-    public void lock(String lockName, String remark);
+    public void lock(String lockName, int timeoutms, String remark) throws DlockException;
 
-    public boolean tryLock();
+    public boolean tryLock(String lockName, int timeoutms, String remark) throws DlockException;
 
-    public void unlock();
+    public void unlock() throws DlockException;
 
 }
