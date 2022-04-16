@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.github.xhrg.dlock</groupId>
+    <artifactId>dlock</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>dlock</name>
+    <description>Distributed lock based on MySQL</description>
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <developers>
+        <developer>
+            <id>xhrg</id>
+            <name>xhrg</name>
+            <email>634789257@qq.com</email>
+        </developer>
+    </developers>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.28</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-compiler-javac</artifactId>
+                        <version>2.7</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+    <!--使用spring的仓库-->
+    <repositories>
+        <repository>
+            <id>Spring Releases</id>
+            <url>http://repo.spring.io/release/</url>
+        </repository>
+    </repositories>
+</project>
