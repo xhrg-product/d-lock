@@ -10,6 +10,8 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.sql.DataSource;
 
+import org.springframework.jdbc.datasource.DataSourceUtils;
+
 public class MysqlLock implements DLock {
 
     private DataSource dataSource;
@@ -25,7 +27,7 @@ public class MysqlLock implements DLock {
         Connection connection = null;
         try {
             LocalDateTime localDateTime = LocalDateTime.now();
-            connection = dataSource.getConnection();
+            connection = DataSourceUtils.getConnection(dataSource);
             int size = SqlHelper.update(connection, SqlCommd.SQL_LOCK, timeString(localDateTime), lockName,
                 timeString(localDateTime.minusSeconds(timeout)));
             if (size > 0) {
@@ -57,6 +59,7 @@ public class MysqlLock implements DLock {
     public void unlock(String lockName) throws DlockException {
         Connection connection = null;
         try {
+            connection = DataSourceUtils.getConnection(dataSource);
             SqlHelper.update(connection, SqlCommd.SQL_UNLOCK, lockName);
         } catch (Exception e) {
             throw new DlockException("unlock", e);
