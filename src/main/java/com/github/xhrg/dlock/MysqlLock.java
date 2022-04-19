@@ -1,11 +1,10 @@
 package com.github.xhrg.dlock;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -23,47 +22,59 @@ public class MysqlLock implements Dlock {
 
     @Override
     public boolean tryLock(String lockName, int timeout) throws DlockException {
+        Connection connection = null;
         try {
             LocalDateTime localDateTime = LocalDateTime.now();
-            Connection connection = dataSource.getConnection();
-            PreparedStatement ps = connection.prepareCall("update d_lock set `status` = 'lock', lock_time = ? "
-                + "  where `name` = ? and ( `status` = 'unlock' or lock_time < ? )");
-            ps.setObject(1, timeString(localDateTime));
-            ps.setObject(2, lockName);
-            ps.setObject(3, timeString(localDateTime.minusMinutes(timeout)));
-            int size = ps.executeUpdate();
+            connection = dataSource.getConnection();
+            int size = SqlHelper.update(connection, SqlCommd.SQL_LOCK, timeString(localDateTime), lockName,
+                timeString(localDateTime.minusSeconds(timeout)));
             if (size > 0) {
                 return true;
             }
             if (Boolean.TRUE.equals(checkTable.get(lockName))) {
                 return false;
             }
-            PreparedStatement ps1 = connection.prepareStatement(" select `name` from d_lock ");
-            ResultSet rs = ps1.executeQuery();
-            while (rs.next()) {
-                String lockNameDb = rs.getString("name");
-                checkTable.put(lockNameDb, true);
+            List<Map<String, Object>> list = SqlHelper.query(connection, SqlCommd.SQL_SELECT_NAME);
+            for (Map<String, Object> m : list) {
+                checkTable.put((String)m.get("name"), true);
             }
             if (Boolean.TRUE.equals(checkTable.get(lockName))) {
                 return false;
             }
-
-            PreparedStatement ps3 = connection.prepareCall(" insert into d_locl value ()");
-            ps3.setObject(size, ps3);
-            int i = ps3.executeUpdate();
-
+            size = SqlHelper.update(connection, SqlCommd.SQL_INSERT, lockName, timeString(localDateTime));
+            if (size > 0) {
+                return true;
+            }
             return false;
-        } catch (SQLException e) {
-            throw new DlockException("get connection exception", e);
+        } catch (Exception e) {
+            throw new DlockException("tryLock", e);
+        } finally {
+            SqlHelper.close(connection);
         }
     }
 
     @Override
-    public void unlock() {}
+    public void unlock(String lockName) throws DlockException {
+        Connection connection = null;
+        try {
+            SqlHelper.update(connection, SqlCommd.SQL_UNLOCK, lockName);
+        } catch (Exception e) {
+            throw new DlockException("unlock", e);
+        } finally {
+            SqlHelper.close(connection);
+        }
+
+    }
 
     @Override
     public void lock(String lockName, int timeout) throws DlockException {
-
+        while (!tryLock(lockName, timeout)) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public String timeString(LocalDateTime localDateTime) {

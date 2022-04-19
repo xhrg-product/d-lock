@@ -6,6 +6,6 @@ public interface Dlock {
 
     public boolean tryLock(String lockName, int timeout) throws DlockException;
 
-    public void unlock() throws DlockException;
+    public void unlock(String lockName) throws DlockException;
 
 }
