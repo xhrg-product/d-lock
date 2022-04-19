@@ -1,6 +1,6 @@
 package com.github.xhrg.dlock;
 
-public interface Dlock {
+public interface DLock {
 
     public void lock(String lockName, int timeout) throws DlockException;
 

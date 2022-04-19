@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.sql.DataSource;
 
-public class MysqlLock implements Dlock {
+public class MysqlLock implements DLock {
 
     private DataSource dataSource;
 
