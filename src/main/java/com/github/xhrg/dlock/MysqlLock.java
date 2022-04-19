@@ -16,12 +16,12 @@ public class MysqlLock implements DLock {
 
     private ConcurrentMap<String, Boolean> checkTable = new ConcurrentHashMap<String, Boolean>();
 
-    public MysqlLock(DataSource dataSource) throws DlockException {
+    public MysqlLock(DataSource dataSource) throws DLockException {
         this.dataSource = dataSource;
     }
 
     @Override
-    public boolean tryLock(String lockName, int timeout) throws DlockException {
+    public boolean tryLock(String lockName, int timeout) throws DLockException {
         Connection connection = null;
         try {
             LocalDateTime localDateTime = LocalDateTime.now();
@@ -47,20 +47,20 @@ public class MysqlLock implements DLock {
             }
             return false;
         } catch (Exception e) {
-            throw new DlockException("tryLock", e);
+            throw new DLockException("tryLock", e);
         } finally {
             SqlHelper.close(connection);
         }
     }
 
     @Override
-    public void unlock(String lockName) throws DlockException {
+    public void unlock(String lockName) throws DLockException {
         Connection connection = null;
         try {
             connection = this.dataSource.getConnection();// DataSourceUtils.getConnection(dataSource);
             SqlHelper.update(connection, SqlCommd.SQL_UNLOCK, lockName);
         } catch (Exception e) {
-            throw new DlockException("unlock", e);
+            throw new DLockException("unlock", e);
         } finally {
             SqlHelper.close(connection);
         }
@@ -68,7 +68,7 @@ public class MysqlLock implements DLock {
     }
 
     @Override
-    public void lock(String lockName, int timeout) throws DlockException {
+    public void lock(String lockName, int timeout) throws DLockException {
         while (!tryLock(lockName, timeout)) {
             try {
                 Thread.sleep(500);
