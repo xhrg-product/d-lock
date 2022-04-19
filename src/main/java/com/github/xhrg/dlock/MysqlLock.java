@@ -43,6 +43,7 @@ public class MysqlLock implements DLock {
             }
             size = SqlHelper.update(connection, SqlCommd.SQL_INSERT, lockName, timeString(localDateTime));
             if (size > 0) {
+                checkTable.put(lockName, true);
                 return true;
             }
             return false;
