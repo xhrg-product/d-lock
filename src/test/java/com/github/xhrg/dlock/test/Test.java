@@ -1,9 +1,10 @@
 package com.github.xhrg.dlock.test;
 
-import com.github.xhrg.dlock.DLock;
-import com.github.xhrg.dlock.DLockException;
-import com.github.xhrg.dlock.MysqlLock;
 import com.mysql.cj.jdbc.MysqlDataSource;
+
+import io.github.xhrg.dlock.DLock;
+import io.github.xhrg.dlock.DLockException;
+import io.github.xhrg.dlock.MysqlLock;
 
 public class Test {
 

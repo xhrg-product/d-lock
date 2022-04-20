@@ -1,4 +1,4 @@
-package com.github.xhrg.dlock;
+package io.github.xhrg.dlock;
 
 import java.sql.Connection;
 import java.time.LocalDateTime;

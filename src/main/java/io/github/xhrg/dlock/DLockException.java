@@ -1,4 +1,4 @@
-package com.github.xhrg.dlock;
+package io.github.xhrg.dlock;
 
 public class DLockException extends Exception {
 
