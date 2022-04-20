@@ -17,3 +17,8 @@ d为db指的是数据库，或者"Distributed lock"中的d。
 #### 要不要select for update
 
 会占用mysql的链接，所以不使用， 比较适合等待排他锁，但是不适合不等待的排他锁
+
+
+#### 加锁insert，解锁delete
+
+这种方法没有考虑到锁超时，如果出现锁超时，又需要检查数据。
