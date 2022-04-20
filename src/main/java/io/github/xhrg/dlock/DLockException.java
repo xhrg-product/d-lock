@@ -7,5 +7,4 @@ public class DLockException extends Exception {
     public DLockException(String message, Throwable cause) {
         super(message, cause);
     }
-
 }

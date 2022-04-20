@@ -1,6 +1,6 @@
 package io.github.xhrg.dlock;
 
-public class SqlCommd {
+public class SqlCommand {
 
     public static String SQL_LOCK =
         "update database_lock set `status` = 'lock', `time` = ? where `name` = ? and ( `status` = 'unlock' or `time` < ? )";

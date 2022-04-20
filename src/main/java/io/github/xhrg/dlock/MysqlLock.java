@@ -29,7 +29,7 @@ public class MysqlLock implements DLock {
             String nowString = timeString(localDateTime);
 
             connection = this.dataSource.getConnection();// DataSourceUtils.getConnection(dataSource);
-            int size = SqlHelper.update(connection, SqlCommd.SQL_LOCK, nowString, lockName,
+            int size = SqlExecutor.update(connection, SqlCommand.SQL_LOCK, nowString, lockName,
                 timeString(localDateTime.minusSeconds(timeout)));
             if (size > 0) {
                 return true;
@@ -37,14 +37,14 @@ public class MysqlLock implements DLock {
             if (Boolean.TRUE.equals(checkTable.get(lockName))) {
                 return false;
             }
-            List<Map<String, Object>> list = SqlHelper.query(connection, SqlCommd.SQL_SELECT_NAME);
+            List<Map<String, Object>> list = SqlExecutor.query(connection, SqlCommand.SQL_SELECT_NAME);
             for (Map<String, Object> m : list) {
                 checkTable.put((String)m.get("name"), true);
             }
             if (Boolean.TRUE.equals(checkTable.get(lockName))) {
                 return false;
             }
-            size = SqlHelper.update(connection, SqlCommd.SQL_INSERT, lockName, nowString);
+            size = SqlExecutor.update(connection, SqlCommand.SQL_INSERT, lockName, nowString);
             if (size > 0) {
                 checkTable.put(lockName, true);
                 return true;
@@ -53,7 +53,7 @@ public class MysqlLock implements DLock {
         } catch (Exception e) {
             throw new DLockException("tryLock", e);
         } finally {
-            SqlHelper.close(connection);
+            SqlExecutor.close(connection);
         }
     }
 
@@ -62,11 +62,11 @@ public class MysqlLock implements DLock {
         Connection connection = null;
         try {
             connection = this.dataSource.getConnection();// DataSourceUtils.getConnection(dataSource);
-            SqlHelper.update(connection, SqlCommd.SQL_UNLOCK, lockName);
+            SqlExecutor.update(connection, SqlCommand.SQL_UNLOCK, lockName);
         } catch (Exception e) {
             throw new DLockException("unlock", e);
         } finally {
-            SqlHelper.close(connection);
+            SqlExecutor.close(connection);
         }
 
     }

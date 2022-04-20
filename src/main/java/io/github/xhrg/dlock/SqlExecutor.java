@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SqlHelper {
+public class SqlExecutor {
 
     public static List<Map<String, Object>> query(Connection connection, String sql, Object... param) throws Exception {
         PreparedStatement ps = null;
