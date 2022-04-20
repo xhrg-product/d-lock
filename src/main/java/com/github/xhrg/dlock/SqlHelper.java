@@ -16,7 +16,7 @@ public class SqlHelper {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = connection.prepareStatement(" select `name` from d_lock ");
+            ps = connection.prepareStatement(sql);
             for (int i = 0; i < param.length; i++) {
                 ps.setObject(i + 1, param[i]);
             }

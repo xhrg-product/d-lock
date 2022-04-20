@@ -25,8 +25,11 @@ public class MysqlLock implements DLock {
         Connection connection = null;
         try {
             LocalDateTime localDateTime = LocalDateTime.now();
+
+            String nowString = timeString(localDateTime);
+
             connection = this.dataSource.getConnection();// DataSourceUtils.getConnection(dataSource);
-            int size = SqlHelper.update(connection, SqlCommd.SQL_LOCK, timeString(localDateTime), lockName,
+            int size = SqlHelper.update(connection, SqlCommd.SQL_LOCK, nowString, lockName,
                 timeString(localDateTime.minusSeconds(timeout)));
             if (size > 0) {
                 return true;
@@ -41,7 +44,7 @@ public class MysqlLock implements DLock {
             if (Boolean.TRUE.equals(checkTable.get(lockName))) {
                 return false;
             }
-            size = SqlHelper.update(connection, SqlCommd.SQL_INSERT, lockName, timeString(localDateTime));
+            size = SqlHelper.update(connection, SqlCommd.SQL_INSERT, lockName, nowString);
             if (size > 0) {
                 checkTable.put(lockName, true);
                 return true;
